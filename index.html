@@ -397,11 +397,22 @@ async function loadData() {
             brainMesh.traverse((child) => {
                 if (child.isMesh) {
                     state.meshes.push(child);
-                    // Force vertex colors
-                    child.geometry.setAttribute('color', 
-                        new THREE.BufferAttribute(new Float32Array(child.geometry.attributes.position.count * 3), 3)
+                    child.geometry.setAttribute('color',
+                        new THREE.BufferAttribute(
+                            new Float32Array(child.geometry.attributes.position.count * 3), 3)
                     );
+                    child.material = child.material.clone();
                     child.material.vertexColors = true;
+                    child.material.transparent = true;
+                    // first mesh in scene = transparent shell (rest of brain)
+                    if (state.meshes.length === 1) {
+                        child.material.opacity = 0.15;
+                        child.material.depthWrite = false;  // critical — prevents shell occluding V1
+                    } else {
+                        // second mesh = V1, solid
+                        child.material.opacity = 0.95;
+                        child.material.depthWrite = true;
+                    }
                 }
             });
 
