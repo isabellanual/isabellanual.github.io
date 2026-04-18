@@ -737,12 +737,12 @@ function updateBrainColors(isModeB) {
         
         for (let i = 0; i < v2v.length; i++) {
             if (!mask[i]) {
-                targetColors.push(getGrey(0.3));
+                targetColors.push(getGrey(0.82));   // light whitish-grey for rest of brain
             } else {
                 const voxelIdx = v2v[i];
                 const rVal = corrs[voxelIdx];
                 if (rVal === null || isNaN(rVal)) {
-                    targetColors.push(getGrey(0.1));
+                    targetColors.push(getGrey(0.6)); // mid-grey for NaN voxels
                 } else {
                     targetColors.push(getYlOrRd(rVal / maxR));
                 }
@@ -757,7 +757,7 @@ function updateBrainColors(isModeB) {
 
         for (let i = 0; i < v2v.length; i++) {
             if (!mask[i]) {
-                targetColors.push(getGrey(0.3));
+                targetColors.push(getGrey(0.82));   // light whitish-grey for rest of brain
             } else {
                 const voxelIdx = v2v[i];
                 const pVal = pred[voxelIdx];
@@ -843,4 +843,3 @@ document.getElementById('dismiss-tooltip').addEventListener('click', () => {
 
 </body>
 </html>
-
