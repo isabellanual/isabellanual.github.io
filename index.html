@@ -255,33 +255,15 @@
     <!-- Intro tooltip — dismissible, shown once on load -->
     <div id="intro-tooltip" class="fixed inset-0 z-50 flex items-end md:items-center justify-center p-4 md:p-0" style="background:rgba(0,0,0,0.6)">
         <div class="bg-[#1a2535] border border-[var(--border)] rounded-2xl p-6 max-w-sm w-full shadow-2xl">
-            <div class="flex items-start gap-3 mb-4">
-                <div class="w-3 h-3 rounded-full bg-[var(--accent)] mt-1 flex-shrink-0"></div>
-                <div>
-                    <h2 class="text-white font-bold text-sm mb-1">What am I looking at?</h2>
-                    <p class="text-[var(--muted)] text-xs leading-relaxed">
-                        This model predicts brain activity in <span class="text-white font-semibold">V1</span> — the primary visual cortex — in response to natural images.
-                    </p>
-                </div>
-            </div>
-            <div class="flex items-start gap-3 mb-4">
-                <div class="w-3 h-3 rounded-full bg-[#fd8d3c] mt-1 flex-shrink-0"></div>
-                <div>
-                    <p class="text-[var(--muted)] text-xs leading-relaxed">
-                        The <span class="text-white font-semibold">colored region</span> on the brain is V1. Warmer colors = more accurate predictions. The grey brain is shown for context only — the model does not predict anywhere else.
-                    </p>
-                </div>
-            </div>
-            <div class="flex items-start gap-3 mb-6">
-                <div class="w-3 h-3 rounded-full bg-[var(--muted)] mt-1 flex-shrink-0"></div>
-                <div>
-                    <p class="text-[var(--muted)] text-xs leading-relaxed">
-                        <span class="text-white font-semibold">Tap an image</span> below to see how the model predicted V1's response to that specific scene. Rotate the brain by dragging.
-                    </p>
-                </div>
-            </div>
+            <h2 class="text-white font-bold text-sm mb-3">What am I looking at?</h2>
+            <p class="text-[var(--muted)] text-xs leading-relaxed mb-3">
+                The <span class="text-white font-semibold">glowing region at the back of the brain</span> is V1 — the primary visual cortex, located in the occipital lobe. That's where your brain first processes what your eyes see.
+            </p>
+            <p class="text-[var(--muted)] text-xs leading-relaxed mb-6">
+                <span class="text-white font-semibold">Tap any image</span> to see how strongly V1 responded to that scene. Drag the brain to rotate it.
+            </p>
             <button id="dismiss-tooltip" class="w-full py-3 rounded-xl text-sm font-bold text-white" style="background: var(--accent);">
-                Got it — explore the model
+                Got it — explore
             </button>
         </div>
     </div>
