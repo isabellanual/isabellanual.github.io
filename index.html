@@ -407,37 +407,39 @@ async function loadData() {
 
         loadingStatus.innerText = 'Loading brain mesh…';
         
+        // DEBUG: bright red sphere at origin — if black, problem is camera/scene not mesh
+        const debugSphere = new THREE.Mesh(
+            new THREE.SphereGeometry(20, 16, 16),
+            new THREE.MeshBasicMaterial({ color: 0xff0000 })
+        );
+        scene.add(debugSphere);
+        console.log('DEBUG red sphere added at origin');
+        console.log('DEBUG camera pos:', camera.position);
+
         const loader = new THREE.GLTFLoader();
         loader.load('brain_heatmap.glb', (gltf) => {
             const brainMesh = gltf.scene;
+            const box = new THREE.Box3().setFromObject(brainMesh);
+            const center = new THREE.Vector3();
+            const size = new THREE.Vector3();
+            box.getCenter(center);
+            box.getSize(size);
+            console.log('DEBUG GLB center:', JSON.stringify(center));
+            console.log('DEBUG GLB size:', JSON.stringify(size));
             scene.add(brainMesh);
             
             // Scan for meshes
             brainMesh.traverse((child) => {
                 if (child.isMesh) {
-                    // Dispose old GLB material
-                    if (child.material) {
-                        if (Array.isArray(child.material)) child.material.forEach(m => m.dispose());
-                        else child.material.dispose();
-                    }
-
-                    // Delete any baked-in color attribute (all zeros = black)
-                    if (child.geometry.attributes.color) {
-                        child.geometry.deleteAttribute('color');
-                    }
-
-                    const count = child.geometry.attributes.position.count;
-                    const initColors = new Float32Array(count * 3);
-                    for (let i = 0; i < count * 3; i++) initColors[i] = 0.92;
-                    const colorAttr = new THREE.BufferAttribute(initColors, 3);
-                    colorAttr.needsUpdate = true;
-                    child.geometry.setAttribute('color', colorAttr);
-
-                    // MeshBasicMaterial ignores normals/lighting entirely —
-                    // vertex color is rendered directly, immune to normal issues
-                    child.material = new THREE.MeshBasicMaterial({ vertexColors: true });
-
                     state.meshes.push(child);
+                    const count = child.geometry.attributes.position.count;
+                    // Initialize to light grey so mesh is visible before updateBrainColors runs
+                    const initColors = new Float32Array(count * 3);
+                    for (let i = 0; i < count * 3; i++) initColors[i] = 0.82;
+                    child.geometry.setAttribute('color',
+                        new THREE.BufferAttribute(initColors, 3)
+                    );
+                    child.material = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.8, metalness: 0.0 });
                 }
             });
 
@@ -765,12 +767,12 @@ function updateBrainColors(isModeB) {
         
         for (let i = 0; i < v2v.length; i++) {
             if (!mask[i]) {
-                targetColors.push(getGrey(0.92));   // near-white for rest of brain
+                targetColors.push(getGrey(0.82));   // light whitish-grey for rest of brain
             } else {
                 const voxelIdx = v2v[i];
                 const rVal = corrs[voxelIdx];
                 if (rVal === null || isNaN(rVal)) {
-                    targetColors.push(getGrey(0.75));
+                    targetColors.push(getGrey(0.6)); // mid-grey for NaN voxels
                 } else {
                     targetColors.push(getYlOrRd(rVal / maxR));
                 }
@@ -785,7 +787,7 @@ function updateBrainColors(isModeB) {
 
         for (let i = 0; i < v2v.length; i++) {
             if (!mask[i]) {
-                targetColors.push(getGrey(0.92));   // near-white for rest of brain
+                targetColors.push(getGrey(0.82));   // light whitish-grey for rest of brain
             } else {
                 const voxelIdx = v2v[i];
                 const pVal = pred[voxelIdx];
